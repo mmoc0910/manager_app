@@ -23,6 +23,7 @@ const ResultExamScreen: FC<ResultExamScreenProps> = ({ navigation, route }) => {
   const { result_exam_id, class_id, class_name } = route.params;
   const { accessToken } = useSelector((state: RootState) => state.auth);
   const [resultExam, setResultExam] = useState<ResultScoreType>();
+  console.log("============================================== ,", resultExam);
   useLayoutEffect(() => {
     navigation.setOptions({
       header: ({
@@ -63,7 +64,7 @@ const ResultExamScreen: FC<ResultExamScreenProps> = ({ navigation, route }) => {
   const checkScore = (exam_content: ExamContentType[], answer: string[]) => {
     let total_question = 0;
     exam_content.forEach((item, index) => {
-      if (item.correct === Number(answer[index])) {
+      if (answer[index] && item.correct === Number(answer[index])) {
         total_question++;
       }
     });
@@ -94,7 +95,7 @@ const ResultExamScreen: FC<ResultExamScreenProps> = ({ navigation, route }) => {
           Tổng điểm:{" "}
           {(checkScore(exam_content, result_answer) / totalQuestion) * 10}
         </CustomText>
-        <StyledComponent component={View} className="mt-5 space-y-3">
+        <StyledComponent component={View} className="mt-5 space-y-3 mb-20">
           {exam_content.length > 0 &&
             exam_content.map(({ answer, question, correct }, index) => {
               const questionIndex = index;

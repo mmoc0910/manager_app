@@ -306,7 +306,7 @@ const ClassDetailScreen: FC<ClassDetailScreenProps> = ({
         />
       ),
     });
-  }, [bottomSheetIndex, navigation, class_id]);
+  }, [bottomSheetIndex, navigation, class_id, role]);
   useEffect(() => {
     if (isFocused) {
       fetchData();

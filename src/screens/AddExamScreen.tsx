@@ -39,7 +39,7 @@ const AddExamScreen: FC<AddExamScreenProps> = ({ navigation, route }) => {
   const [questions, setQuestions] = useState<QuestionType[]>(
     initialExam
       ? JSON.parse(initialExam.content)
-      : [{ question: "", answer: ["", "", "", ""], correct: undefined }]
+      : [{ question: "", answer: ["A. ", "B. ", "C. ", "D. "], correct: undefined }]
   );
   console.log("questions - ", questions);
   const { control, handleSubmit } = useForm({
@@ -159,6 +159,7 @@ const AddExamScreen: FC<AddExamScreenProps> = ({ navigation, route }) => {
             control={control}
             name={"duration"}
             placeHolder="Thời gian (phút)"
+            inputProps={{ keyboardType: "numeric" }}
           />
         </StyledComponent>
       </StyledComponent>
@@ -186,7 +187,7 @@ const AddExamScreen: FC<AddExamScreenProps> = ({ navigation, route }) => {
         onPress={() =>
           setQuestions((curQuestions) =>
             _.concat(curQuestions, [
-              { question: "", answer: ["", "", "", ""], correct: undefined },
+              { question: "", answer: ["A. ", "B. ", "C. ", "D. "], correct: undefined },
             ])
           )
         }

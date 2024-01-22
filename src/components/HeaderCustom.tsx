@@ -53,7 +53,7 @@ const HeaderCustom: FC<HeaderCustomProps> = ({
           {title ? (
             <CustomText
               fontFamily="Montserrat-Medium"
-              classes="text-lg ml-4 mr-10"
+              classes="text-lg ml-4 w-3/5"
               textProps={{ numberOfLines: 1, lineBreakMode: "tail" }}
             >
               {title}
@@ -83,7 +83,9 @@ const HeaderCustom: FC<HeaderCustomProps> = ({
           </StyledComponent>
         </StyledComponent>
       )}
-      {contentRight ? contentRight() : null}
+      <StyledComponent component={View} className="flex">
+        {contentRight ? contentRight() : null}
+      </StyledComponent>
     </StyledComponent>
   );
 };

@@ -24,13 +24,18 @@ type DataLogin = {
   phone: string;
   name: string;
   address: string;
+  rePassword: string;
 };
 
 const schema = yup
   .object({
     username: yup.string().required("Tên tài khoản không được để trống"),
     name: yup.string().required("Họ và tên không được để trống"),
-    password: yup.string().required("Mật khẩu không được để trống"),
+    password: yup
+      .string()
+      .min(8, "Mật khẩu ít nhất 8 ký tự")
+      .required("Mật khẩu không được để trống"),
+    rePassword: yup.string().required("Mật khẩu không được để trống"),
     phone: yup.string().required("Số điện thoại không được để trống"),
     address: yup.string().required("Địa chỉ không được để trống"),
   })
@@ -38,6 +43,7 @@ const schema = yup
 const SignInScreen: FC<SignInScreenProps> = ({ navigation }) => {
   const [role, setRole] = useState<1 | 2>(1);
   const [showpass, setShowPass] = useState<boolean>(true);
+  const [showRePass, setShowRePass] = useState<boolean>(true);
   const {
     control,
     handleSubmit,
@@ -53,19 +59,30 @@ const SignInScreen: FC<SignInScreenProps> = ({ navigation }) => {
   //   }
   // }, [accessToken]);
   const onSubmit = async (data: DataLogin) => {
-    console.log("data - ", data);
-    try {
-      const result = await api.post<{ data: AuthState }>("/auth/register", {
-        ...data,
-        role,
-      });
-      const response = result.data.data;
-      console.log("result - ", response);
-      navigation.navigate("LogIn");
-      // dispatch(setAuth(response));
-    } catch (error) {
-      console.log("error signin - ", error);
-      setError("username", { message: "Tên tài khoản hoặc email đã tồn tại" });
+    if (data.password === data.rePassword) {
+      console.log("data - ", data);
+      const { username, password, phone, name, address } = data;
+      try {
+        const result = await api.post<{ data: AuthState }>("/auth/register", {
+          username,
+          password,
+          phone,
+          name,
+          address,
+          role,
+        });
+        const response = result.data.data;
+        console.log("result - ", response);
+        navigation.navigate("LogIn");
+        // dispatch(setAuth(response));
+      } catch (error) {
+        console.log("error signin - ", error);
+        setError("username", {
+          message: "Tên tài khoản hoặc email đã tồn tại",
+        });
+      }
+    } else {
+      setError("rePassword", { message: "Mật khẩu nhập lại không khớp" });
     }
   };
   return (
@@ -74,7 +91,7 @@ const SignInScreen: FC<SignInScreenProps> = ({ navigation }) => {
         <CustomText fontFamily="Montserrat-Medium" classes="text-2xl">
           Đăng ký
         </CustomText>
-        <StyledComponent component={View} className="mt-14 space-y-3">
+        <StyledComponent component={View} className="mt-5 space-y-3">
           <StyledComponent component={View}>
             <InputAuthCustom
               control={control}
@@ -116,6 +133,22 @@ const SignInScreen: FC<SignInScreenProps> = ({ navigation }) => {
                 height={22}
                 color={"#000"}
                 onPress={() => setShowPass(!showpass)}
+              />
+            </InputAuthCustom>
+          </StyledComponent>
+          <StyledComponent component={View}>
+            <InputAuthCustom
+              control={control}
+              name={"rePassword"}
+              placeHolder="Nhập lại mật khẩu"
+              inputProps={{ secureTextEntry: showRePass }}
+            >
+              <SvgXml
+                xml={showRePass ? eyeCloseXML : eyeXML}
+                width={22}
+                height={22}
+                color={"#000"}
+                onPress={() => setShowRePass(!showRePass)}
               />
             </InputAuthCustom>
           </StyledComponent>

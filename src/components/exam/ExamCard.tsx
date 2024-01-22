@@ -95,7 +95,13 @@ const ExamCard: FC<ExamCardProps> = ({
         </CustomText>
         {role === 1 && (
           <CustomText fontFamily="Montserrat-Medium">
-            Trạng thái: {results.length > 0 ? "Đã hoàn thành" : "Chưa làm"}
+            Trạng thái:{" "}
+            <CustomText
+              fontFamily="Montserrat-Medium"
+              classes={results.length > 0 ? "text-[#74b9ff]" : "text-[#d63031]"}
+            >
+              {results.length > 0 ? "Đã hoàn thành" : "Chưa làm"}
+            </CustomText>
           </CustomText>
         )}
       </StyledComponent>

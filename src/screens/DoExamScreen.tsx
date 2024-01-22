@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Pressable } from "react-native";
+import { View, Text, ScrollView, Pressable, Alert } from "react-native";
 import React, { FC, useEffect, useLayoutEffect, useState } from "react";
 import { StyledComponent } from "nativewind";
 import HeaderCustom from "../components/HeaderCustom";
@@ -34,7 +34,31 @@ const DoExamScreen: FC<DoExamScreenProps> = ({ navigation, route }) => {
         back?: {
           title: string;
         };
-      }) => <HeaderCustom back={back} title={"Làm bài kiểm tra"} />,
+      }) => (
+        <HeaderCustom
+          back={back}
+          title={"Làm bài kiểm tra"}
+          onPressBack={() =>
+            Alert.alert(
+              "Bạn có muốn thoát bài kiểm tra",
+              "Bài kiểm tra của bạn sẽ được ghi nhận",
+              [
+                {
+                  text: "Cancel",
+                  onPress: () => console.log("Cancel Pressed"),
+                  style: "cancel",
+                },
+                {
+                  text: "OK",
+                  onPress: () => {
+                    handleSubmit();
+                  },
+                },
+              ]
+            )
+          }
+        />
+      ),
     });
   }, [navigation]);
   useEffect(() => {
@@ -148,7 +172,7 @@ const DoExamScreen: FC<DoExamScreenProps> = ({ navigation, route }) => {
                                 width: 15,
                                 height: 15,
                                 marginRight: 10,
-                                transform: [{ translateY: -3 }],
+                                // transform: [{ translateY: -3 }],
                               }}
                             />
                             <CustomText classes="text-base">{item}</CustomText>
@@ -163,7 +187,25 @@ const DoExamScreen: FC<DoExamScreenProps> = ({ navigation, route }) => {
           <StyledComponent
             component={Pressable}
             className="h-12 bg-black rounded-lg items-center justify-center mt-8"
-            onPress={() => handleSubmit()}
+            onPress={() =>
+              Alert.alert(
+                "Bạn có muốn nộp bài kiểm tra",
+                "Bài kiểm tra của bạn sẽ được ghi nhận kết quả",
+                [
+                  {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel",
+                  },
+                  {
+                    text: "OK",
+                    onPress: () => {
+                      handleSubmit();
+                    },
+                  },
+                ]
+              )
+            }
           >
             <CustomText fontFamily="Montserrat-SemiBold" classes="text-white">
               Nộp bài
