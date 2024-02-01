@@ -36,20 +36,20 @@ const AddStudentScreen: FC<AddStudentProps> = ({ navigation, route }) => {
     });
   }, [navigation]);
   const fetchStudent = async () => {
-    if (search) {
-      try {
-        const result = await api.get<AuthType[]>(
-          `/users?role=1&name=${search}`,
-          {
-            headers: { Authorization: accessToken },
-          }
-        );
-        console.log("result - ", result.data);
-        setSearchStudents(result.data.filter((item) => item.role === 1));
-      } catch (error) {
-        console.log(error);
-      }
+    // if (search) {
+    try {
+      const result = await api.get<AuthType[]>(
+        `/users?role=1${search ? `&name=${search}` : ""}`,
+        {
+          headers: { Authorization: accessToken },
+        }
+      );
+      console.log("result - ", result.data);
+      setSearchStudents(result.data.filter((item) => item.role === 1));
+    } catch (error) {
+      console.log(error);
     }
+    // }
   };
   const handleAddStudent = async (_id: string) => {
     try {
