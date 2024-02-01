@@ -5,7 +5,7 @@ import CustomText from "../components/texts/CustomText";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { NavigationProp } from "@react-navigation/native";
+import { NavigationProp, RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../../types";
 import InputAuthCustom from "../components/form/InputAuthCustom";
 import { api } from "../../api";
@@ -17,6 +17,7 @@ import { eyeCloseXML, eyeXML } from "../icons";
 
 type LoginScreenProps = {
   navigation: NavigationProp<RootStackParamList, "LogIn">;
+  route: RouteProp<RootStackParamList, "LogIn">;
 };
 type DataLogin = { username: string; password: string };
 
@@ -26,7 +27,8 @@ const schema = yup
     password: yup.string().required("Mật khẩu không được để trống"),
   })
   .required();
-const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
+const LoginScreen: FC<LoginScreenProps> = ({ navigation, route }) => {
+  const sign_in_success = route.params?.sign_in_success || undefined;
   // console.log("auth - ", username);
   const dispatch = useDispatch<AppDispatch>();
   const { accessToken } = useSelector((state: RootState) => state.auth);
@@ -79,6 +81,15 @@ const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
         >
           Đăng nhập
         </CustomText>
+        {sign_in_success ? (
+          <CustomText
+            fontFamily="Montserrat-Medium"
+            classes="text-base text-[#74b9ff] text-center mt-5"
+          >
+            Đăng ký thành công hãy đăng nhập đê sử dụng
+          </CustomText>
+        ) : null}
+
         <StyledComponent component={View} className="mt-14 space-y-4">
           <StyledComponent component={View}>
             <InputAuthCustom

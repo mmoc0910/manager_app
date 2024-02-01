@@ -115,6 +115,7 @@ const ExamCard: FC<ExamCardProps> = ({
             navigation.navigate("StatisticalScore", {
               exam_id: exam._id,
               exam_name: exam.title,
+              class_id: class_id,
             })
           }
         />

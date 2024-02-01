@@ -6,7 +6,13 @@ import {
   RouteProp,
   useNavigation,
 } from "@react-navigation/native";
-import { ExamContentType, RootStackParamList, SatisfyType } from "../../types";
+import {
+  AuthType,
+  ClassType,
+  ExamContentType,
+  RootStackParamList,
+  SatisfyType,
+} from "../../types";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import { api } from "../../api";
@@ -22,9 +28,10 @@ const StatisticalScoreScreen: FC<StatisticalScoreScreenProps> = ({
   navigation,
   route,
 }) => {
-  const { exam_id, exam_name } = route.params;
+  const { exam_id, exam_name, class_id } = route.params;
   const { accessToken } = useSelector((state: RootState) => state.auth);
   const [satisfy, setSatisfy] = useState<SatisfyType>();
+  const [students, setStudents] = useState<AuthType[]>([]);
   useLayoutEffect(() => {
     navigation.setOptions({
       header: ({
@@ -39,14 +46,17 @@ const StatisticalScoreScreen: FC<StatisticalScoreScreenProps> = ({
   useEffect(() => {
     (async () => {
       try {
-        const result = await api.get<SatisfyType>(
-          `/results/satisfy/${exam_id}`,
-          {
+        const [resultSatisfy, resultStudent] = await Promise.all([
+          api.get<SatisfyType>(`/results/satisfy/${exam_id}`, {
             headers: { Authorization: accessToken },
-          }
-        );
-        console.log("result - ", result.data);
-        setSatisfy(result.data);
+          }),
+          await api.get<ClassType>(`/classes/${class_id}`, {
+            headers: { Authorization: accessToken },
+          }),
+        ]);
+        console.log("result - ", resultSatisfy.data);
+        setSatisfy(resultSatisfy.data);
+        setStudents(resultStudent.data.students);
       } catch (error) {
         console.log(error);
       }
@@ -68,26 +78,35 @@ const StatisticalScoreScreen: FC<StatisticalScoreScreenProps> = ({
       </CustomText>
       {satisfy?.rank && satisfy.rank.length > 0 ? (
         <FlatList
-          data={satisfy.rank}
+          // data={satisfy.rank}
+          data={students}
           keyExtractor={(item, index) => `${item._id}-${index}`}
           renderItem={({ item }) => {
-            const exam_content: ExamContentType[] = JSON.parse(
-              item.exam.content
+            const complete = satisfy.rank.find(
+              (i) => i.student._id === item._id
             );
-            return (
-              <SatisfyCard
-                student_name={item.student.name}
-                score={
-                  (checkScore(exam_content, item.answer) / item.totalQuestion) *
-                  10
-                }
-                result_exam_id={item._id}
-                class_name={exam_name}
-              />
-            );
+            console.log("complete - ", complete);
+            if (complete) {
+              const exam_content: ExamContentType[] = JSON.parse(
+                complete.exam.content
+              );
+              return (
+                <SatisfyCard
+                  student_name={complete.student.name}
+                  score={
+                    (checkScore(exam_content, complete.answer) /
+                      complete.totalQuestion) *
+                    10
+                  }
+                  result_exam_id={item._id}
+                  status={1}
+                />
+              );
+            }
+            return <SatisfyCard student_name={item.name} status={0} />;
           }}
           ItemSeparatorComponent={() => (
-            <StyledComponent component={View} className="h-2" />
+            <StyledComponent component={View} className="h-4" />
           )}
         />
       ) : (
@@ -103,27 +122,50 @@ const SatisfyCard = ({
   student_name,
   score,
   result_exam_id,
-  class_name,
-}: {
+  status,
+}: // class_name,
+{
   student_name: string;
-  score: number;
-  result_exam_id: string;
-  class_name: string;
+  score?: number;
+  result_exam_id?: string;
+  status?: 0 | 1;
+  // class_name: string;
 }) => {
+  console.log("score - ", score);
   const navigation =
     useNavigation<NavigationProp<RootStackParamList, "StatisticalScore">>();
   return (
     <StyledComponent
       component={Pressable}
-      className="flex-row items-center justify-between"
+      className="flex-row gap-3"
       onPress={() =>
+        result_exam_id &&
         navigation.navigate("ResultExam", {
           result_exam_id,
         })
       }
     >
-      <CustomText classes="text-base">{student_name}</CustomText>
-      <CustomText>Tổng điểm: {score}</CustomText>
+      <StyledComponent
+        component={View}
+        className="w-11 h-11 object-cover bg-slate-500 rounded-full"
+      />
+      <StyledComponent component={View} className="flex-1">
+        <StyledComponent component={View} className="flex-row justify-between">
+          <CustomText classes="text-base" fontFamily="Montserrat-Medium">{student_name}</CustomText>
+          {score !== undefined ? (
+            <CustomText classes="text-base">Tổng điểm: {score}</CustomText>
+          ) : null}
+        </StyledComponent>
+        {status === 1 ? (
+          <CustomText fontFamily="Montserrat-Medium" classes="text-[#74b9ff]">
+            Đã làm
+          </CustomText>
+        ) : (
+          <CustomText fontFamily="Montserrat-Medium" classes="text-[#d63031]">
+            Chưa làm
+          </CustomText>
+        )}
+      </StyledComponent>
     </StyledComponent>
   );
 };

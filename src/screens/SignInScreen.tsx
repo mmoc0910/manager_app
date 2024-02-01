@@ -73,7 +73,7 @@ const SignInScreen: FC<SignInScreenProps> = ({ navigation }) => {
         });
         const response = result.data.data;
         console.log("result - ", response);
-        navigation.navigate("LogIn");
+        navigation.navigate("LogIn", { sign_in_success: true });
         // dispatch(setAuth(response));
       } catch (error) {
         console.log("error signin - ", error);
@@ -182,7 +182,10 @@ const SignInScreen: FC<SignInScreenProps> = ({ navigation }) => {
         <CustomText classes="text-center pt-7 mb-20">
           Bạn đã có tài khoản?{" "}
           <CustomText
-            textProps={{ onPress: () => navigation.navigate("LogIn") }}
+            textProps={{
+              onPress: () =>
+                navigation.navigate("LogIn", { sign_in_success: false }),
+            }}
             classes="underline"
             fontFamily="Montserrat-Medium"
           >

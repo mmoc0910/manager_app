@@ -2,7 +2,7 @@ import { TextProps, TextStyle } from "react-native";
 
 export type RootStackParamList = {
   Loading: undefined;
-  LogIn: undefined;
+  LogIn: { sign_in_success?: boolean };
   SignIn: undefined;
   Home: undefined;
   Profile: undefined;
@@ -21,7 +21,7 @@ export type RootStackParamList = {
     class_name?: string;
   };
   Chat: { class_id: string; class_name: string };
-  StatisticalScore: { exam_id: string; exam_name: string };
+  StatisticalScore: { exam_id: string; exam_name: string, class_id: string };
 };
 
 export type TextComponentProps = {
