@@ -28,7 +28,6 @@ const schema = yup
   })
   .required();
 const LoginScreen: FC<LoginScreenProps> = ({ navigation, route }) => {
-  const sign_in_success = route.params?.sign_in_success || undefined;
   // console.log("auth - ", username);
   const dispatch = useDispatch<AppDispatch>();
   const { accessToken } = useSelector((state: RootState) => state.auth);
@@ -81,15 +80,6 @@ const LoginScreen: FC<LoginScreenProps> = ({ navigation, route }) => {
         >
           Đăng nhập
         </CustomText>
-        {sign_in_success ? (
-          <CustomText
-            fontFamily="Montserrat-Medium"
-            classes="text-base text-[#74b9ff] text-center mt-5"
-          >
-            Đăng ký thành công hãy đăng nhập đê sử dụng
-          </CustomText>
-        ) : null}
-
         <StyledComponent component={View} className="mt-14 space-y-4">
           <StyledComponent component={View}>
             <InputAuthCustom

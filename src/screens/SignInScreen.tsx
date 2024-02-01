@@ -1,4 +1,4 @@
-import { View, Pressable } from "react-native";
+import { View, Pressable, Alert } from "react-native";
 import React, { FC, useState } from "react";
 import { StyledComponent } from "nativewind";
 import CustomText from "../components/texts/CustomText";
@@ -73,7 +73,20 @@ const SignInScreen: FC<SignInScreenProps> = ({ navigation }) => {
         });
         const response = result.data.data;
         console.log("result - ", response);
-        navigation.navigate("LogIn", { sign_in_success: true });
+        Alert.alert("Đăng ký thành công", "Đăng nhập để sử dụng app", [
+          // {
+          //   text: "Cancel",
+          //   onPress: () => console.log("Cancel Pressed"),
+          //   style: "cancel",
+          // },
+          {
+            text: "Đăng nhập",
+            onPress: () => {
+              navigation.navigate("LogIn");
+            },
+          },
+        ]);
+
         // dispatch(setAuth(response));
       } catch (error) {
         console.log("error signin - ", error);
@@ -183,8 +196,7 @@ const SignInScreen: FC<SignInScreenProps> = ({ navigation }) => {
           Bạn đã có tài khoản?{" "}
           <CustomText
             textProps={{
-              onPress: () =>
-                navigation.navigate("LogIn", { sign_in_success: false }),
+              onPress: () => navigation.navigate("LogIn"),
             }}
             classes="underline"
             fontFamily="Montserrat-Medium"

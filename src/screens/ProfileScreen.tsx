@@ -71,7 +71,7 @@ const ProfileScreen: FC<ProfileScreenProps> = ({ navigation }) => {
             <Pressable
               onPress={() => {
                 dispatch(setAuth({}));
-                navigation.navigate("LogIn", { sign_in_success: undefined });
+                navigation.navigate("LogIn");
               }}
             >
               <CustomText
